@@ -40,8 +40,28 @@ class Employee extends Model
     return $this->hasMany(Intern::class, 'mentor_id');
     }
 
-     public function payrolls():HasMany {
+    public function payrolls():HasMany {
         return $this->hasMany(Payroll::class);
+    }
+
+    public function skills():HasMany
+    {
+        return $this->hasMany(Skill::class);
+    }
+
+    public function certifications():HasMany
+    {
+        return $this->hasMany(Certification::class);
+    }
+
+    public function employmentHistory():HasMany
+    {
+        return $this->hasMany(EmploymentHistory::class);
+    }
+
+    public function promotions():HasMany
+    {
+        return $this->hasMany(Promotion::class);
     }
 
     public function documents()

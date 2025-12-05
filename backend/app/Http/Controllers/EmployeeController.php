@@ -41,7 +41,7 @@ class EmployeeController extends Controller
 
     public function show($id)
     {
-        $employee = Employee::with('user')->findOrFail($id);
+        $employee = Employee::with('user','skills','certifications','employmentHistory','promotions')->findOrFail($id);
         return response()->json([
             'personal' => [
                 'name' => $employee->user->name,
@@ -58,7 +58,44 @@ class EmployeeController extends Controller
                 'hire_date' => optional($employee->hire_date)->toDateString(),
                 'salary' => $employee->salary,
             ],
-            'documents' => $employee->documents(),
+            'skills' => $employee->skills->map(function ($skill) {
+            return [
+                'id' => $skill->id,
+                'skill_name' => $skill->skill_name,
+                'level' => $skill->level,
+            ];
+        }),
+
+            'certifications' => $employee->certifications->map(function ($certificate) {
+            return [
+                'id' => $certificate->id,
+                'title' => $certificate->title,
+                'issued_by' => $certificate->issued_by,
+                'issued_at' => $certificate->issued_at,
+                'expires_at' => $certificate->expires_at,
+            ];
+        }),
+
+            'employment_history' => $employee->employmentHistory->map(function ($Emhistory) {
+            return [
+                'id' => $Emhistory->id,
+                'position_title' => $Emhistory->position_title,
+                'department' => $Emhistory->department,
+                'start_date' => $Emhistory->start_date,
+                'end_date' => $Emhistory->end_date,
+            ];
+        }),
+
+            'promotions' => $employee->promotions->map(function ($promotion) {
+            return [
+                'id' => $promotion->id,
+                'old_position' => $promotion->old_position,
+                'new_position' => $promotion->new_position,
+                'promotion_date' => $promotion->promotion_date,
+            ];
+        }),
+
+        'documents' => $employee->documents(),
         ]);
     }
 
@@ -72,9 +109,53 @@ class EmployeeController extends Controller
         if ($employee->user) {
             $employee->user->update($userData);
         }
-
         $employee->update($employeeData);
-        return response()->json(['message'=>'Employee updated','employee'=>$employee->load('user')]);
+
+        if ($request->has('skills')) {
+        $employee->skills()->delete(); 
+        foreach ($request->skills as $skill) {
+            $employee->skills()->create([
+                'skill_name' => $skill['skill_name'],
+                'level' => $skill['level'],
+            ]);
+        }
+    }
+        if ($request->has('certifications')) {
+        $employee->certifications()->delete();
+        foreach ($request->certifications as $certification) {
+            $employee->certifications()->create([
+                'title' => $certification['title'],
+                'issued_by' => $certification['issued_by'],
+                'issued_at' => $certification['issued_at'],
+                'expires_at' => $certification['expires_at'] ?? null,
+            ]);
+        }
+    }
+
+    if ($request->has('employment_history')) {
+        $employee->employmentHistories()->delete();
+        foreach ($request->employment_history as $Emhistory) {
+            $employee->employmentHistories()->create([
+                'position_title' => $Emhistory['position_title'],
+                'department' => $Emhistory['department']?? null,
+                'start_date' => $Emhistory['start_date'],
+                'end_date' => $Emhistory['end_date']?? null,
+            ]);
+        }
+    }
+
+    if ($request->has('promotions')) {
+        $employee->promotions()->delete();
+        foreach ($request->promotions as $promotion) {
+            $employee->promotions()->create([
+                'old_position' => $promotion['old_position'],
+                'new_position' => $promotion['new_position'],
+                'promotion_date' => $promotion['promotion_date'],
+            ]);
+        }
+    }
+
+        return response()->json(['message'=>'Employee updated','employee'=>$employee->load(['user','skills','certifications','employmentHistory','promotions'])]);
     }
 
 
