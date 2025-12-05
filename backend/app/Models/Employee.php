@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Facades\DB;
 
 class Employee extends Model
 {
@@ -14,7 +15,8 @@ class Employee extends Model
       'hire_date',
       'position',
       'salary',
-      'bank_details'
+      'bank_details',
+      'experience'
     ];
 
     protected function casts(): array
@@ -22,9 +24,7 @@ class Employee extends Model
         return [
             'user_id'=> 'integer',
             'hire_date' => 'date',
-            'position'=> 'string',
             'salary'=>'decimal:2',
-            'bank_details'=> 'string',
         ];
     }
 
@@ -44,6 +44,9 @@ class Employee extends Model
         return $this->hasMany(Payroll::class);
     }
 
-
+    public function documents()
+    {
+        return DB::table('documents')->where('associated_entity', 'employee,' . $this->id)->get(['id', 'title', 'link', 'uploaded_by']);
+    }
 
 }

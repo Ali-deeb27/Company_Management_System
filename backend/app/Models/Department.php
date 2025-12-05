@@ -19,8 +19,6 @@ class Department extends Model
     {
         return [
             'manager_id'=> 'integer',
-            'name' => 'string',
-            'description'=> 'string',
         ];
     }
 
