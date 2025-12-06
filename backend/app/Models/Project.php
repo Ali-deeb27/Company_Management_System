@@ -35,6 +35,10 @@ class Project extends Model
         return $this->hasMany(Task::class);
     }
 
+    public function internshipPositions():HasMany {
+        return $this->hasMany(InternshipPosition::class);
+    }
+
 
 
 }

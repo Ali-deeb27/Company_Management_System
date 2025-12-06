@@ -39,4 +39,8 @@ class Department extends Model
         return $this->hasMany(Project::class);
     }
 
+    public function internshipPositions():HasMany {
+        return $this->hasMany(InternshipPosition::class);
+    }
+
 }
