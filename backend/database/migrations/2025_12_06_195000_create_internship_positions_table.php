@@ -16,14 +16,14 @@ return new class extends Migration
             $table->string('title');
             $table->text('description')->nullable();
             $table->unsignedBigInteger('department_id')->nullable();
+            $table->foreign('department_id')->references('id')->on('departments')->onDelete('set null');
             $table->unsignedBigInteger('project_id')->nullable();
+            $table->foreign('project_id')->references('id')->on('projects')->onDelete('set null');
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
             $table->boolean('is_active')->default(true);
             $table->timestamps();
 
-            $table->foreign('department_id')->references('id')->on('departments')->onDelete('set null');
-            $table->foreign('project_id')->references('id')->on('projects')->onDelete('set null');
         });
     }
 
