@@ -84,4 +84,19 @@ class User extends Authenticatable
         return $this->hasMany(Document::class, 'uploaded_by');
     }
 
+    public function internApplications():HasMany
+    {
+        return $this->hasMany(InternApplication::class, 'user_id');
+    }
+
+     public function approvedInternApplications():HasMany
+    {
+        return $this->hasMany(InternApplication::class, 'approved_by');
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin'; 
+    }
+
 }

@@ -43,4 +43,8 @@ class Department extends Model
         return $this->hasMany(InternshipPosition::class);
     }
 
+     public function internApplications()
+    {
+        return $this->hasMany(InternApplication::class, 'department_id');
+    }
 }

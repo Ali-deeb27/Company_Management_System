@@ -6,7 +6,7 @@ use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\Api\EmployeeController;
 use App\Http\Controllers\Api\InternshipPositionController;
-
+use App\Http\Controllers\InternApplicationController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -31,4 +31,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('internship-positions', [InternshipPositionController::class, 'store']);
     Route::put('internship-positions/{id}', [InternshipPositionController::class, 'update']);
     Route::delete('internship-positions/{id}', [InternshipPositionController::class, 'destroy']);
+
+    
+    Route::get('/intern-applications', [InternApplicationController::class, 'index']);
+    Route::get('/intern-applications/myApps', [InternApplicationController::class, 'myApplications']);
+    Route::post('/intern-applications', [InternApplicationController::class, 'store']);
+    Route::get('/intern-applications/{id}', [InternApplicationController::class, 'show']);
+    Route::post('/intern-applications/{id}/approve', [InternApplicationController::class, 'approve']);
+    Route::post('/intern-applications/{id}/reject', [InternApplicationController::class, 'reject']);
+    Route::delete('/intern-applications/{id}', [InternApplicationController::class, 'destroy']);
 });
