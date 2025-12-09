@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Hash;
 
 class Intern extends Model
 {
@@ -38,5 +40,15 @@ class Intern extends Model
     public function mentor():BelongsTo {
         return $this->belongsTo(Employee::class, 'mentor_id');
     }
+
+    public function progress():HasMany
+{
+    return $this->hasMany(InternProgress::class);
+}
+
+public function evaluations():HasMany
+{
+    return $this->hasMany(InternEvaluation::class);
+}
 
 }

@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\EmployeeController;
 use App\Http\Controllers\Api\InternshipPositionController;
 use App\Http\Controllers\InternApplicationController;
 use App\Http\Controllers\InternController;
+use App\Http\Controllers\InternTrackingController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -42,5 +43,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/intern-applications/{id}/reject', [InternApplicationController::class, 'reject']);
     Route::delete('/intern-applications/{id}', [InternApplicationController::class, 'destroy']);
 
-    Route::post('/interns/{intern}/assign-mentor', [InternController::class, 'assignMentor']);
+    Route::post('/interns/{id}/assign-mentor', [InternController::class, 'assignMentor']);
+
+    Route::post('/interns/{id}/progress', [InternTrackingController::class, 'addProgress']);
+    Route::post('/interns/{id}/evaluation', [InternTrackingController::class, 'addEvaluation']);
+    Route::get('/interns/{id}/tracking', [InternTrackingController::class, 'showTracking']);
 });

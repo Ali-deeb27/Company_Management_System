@@ -69,4 +69,14 @@ class Employee extends Model
         return DB::table('documents')->where('associated_entity', 'employee,' . $this->id)->get(['id', 'title', 'link', 'uploaded_by']);
     }
 
+    public function createProgress():HasMany
+    {
+    return $this->hasMany(InternProgress::class, 'created_by');
+    }
+
+    public function giveEvaluations()
+    {
+    return $this->hasMany(InternEvaluation::class, 'mentor_id');
+    }
+
 }
