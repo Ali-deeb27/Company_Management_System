@@ -79,4 +79,9 @@ class Employee extends Model
     return $this->hasMany(InternEvaluation::class, 'mentor_id');
     }
 
+    public function issueCertificates()
+{
+    return $this->hasMany(InternCertificate::class, 'issued_by');
+}
+
 }

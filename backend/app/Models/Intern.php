@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Hash;
 
 class Intern extends Model
@@ -49,6 +50,11 @@ class Intern extends Model
 public function evaluations():HasMany
 {
     return $this->hasMany(InternEvaluation::class);
+}
+
+public function getCertificate():HasOne
+{
+    return $this->hasOne(InternCertificate::class);
 }
 
 }
