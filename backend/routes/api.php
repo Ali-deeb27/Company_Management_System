@@ -7,6 +7,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\Api\EmployeeController;
 use App\Http\Controllers\Api\InternshipPositionController;
 use App\Http\Controllers\InternApplicationController;
+use App\Http\Controllers\InternController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -40,4 +41,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/intern-applications/{id}/approve', [InternApplicationController::class, 'approve']);
     Route::post('/intern-applications/{id}/reject', [InternApplicationController::class, 'reject']);
     Route::delete('/intern-applications/{id}', [InternApplicationController::class, 'destroy']);
+
+    Route::post('/interns/{intern}/assign-mentor', [InternController::class, 'assignMentor']);
 });
