@@ -123,5 +123,19 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Admin Credentials
+    |--------------------------------------------------------------------------
+    |
+    | Predefined email and password for admin registration.
+    | When a user registers with these exact credentials, they will be assigned
+    | the admin role.
+    |
+    */
+
+    'admin_email' => env('ADMIN_EMAIL', 'admin@company.com'),
+    'admin_password' => env('ADMIN_PASSWORD', 'admin123456'),
 
 ];
+

@@ -10,6 +10,7 @@ use App\Http\Controllers\InternApplicationController;
 use App\Http\Controllers\InternCertificateController;
 use App\Http\Controllers\InternController;
 use App\Http\Controllers\InternTrackingController;
+use App\Http\Controllers\UserRoleController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -54,5 +55,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/interns/{id}/certificate', [InternCertificateController::class, 'show']);
     Route::get('/interns/{id}/certificate/download', [InternCertificateController::class, 'download']);
     Route::delete('/interns/{id}/certificate', [InternCertificateController::class, 'destroy']);
+
+    Route::get('/users', [UserRoleController::class, 'getAllUsers']);
+    Route::get('/users/{id}', [UserRoleController::class, 'getUser']);
+    Route::put('/users/{id}/role', [UserRoleController::class, 'changeRole']);
     
 });
