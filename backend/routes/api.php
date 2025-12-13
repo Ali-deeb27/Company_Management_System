@@ -11,6 +11,7 @@ use App\Http\Controllers\InternCertificateController;
 use App\Http\Controllers\InternController;
 use App\Http\Controllers\InternTrackingController;
 use App\Http\Controllers\Api\DepartmentController;
+use App\Http\Controllers\UserRoleController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -60,5 +61,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/departments',[DepartmentController::class,'index']);
     Route::post('/departments', [DepartmentController::class, 'store']);
 });
+    Route::get('/users', [UserRoleController::class, 'getAllUsers']);
+    Route::get('/users/{id}', [UserRoleController::class, 'getUser']);
+    Route::put('/users/{id}/role', [UserRoleController::class, 'changeRole']);
     
 });

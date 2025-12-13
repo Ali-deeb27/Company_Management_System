@@ -58,16 +58,17 @@ class User extends Authenticatable
         ];
     }
 
-     public function department():BelongsTo {
+    public function department(): BelongsTo
+    {
         return $this->belongsTo(Department::class);
     }
-     public function employee(): HasOne {
+
+    public function employee(): HasOne
     {
         return $this->hasOne(Employee::class);
     }
-}
 
-    public function intern():HasOne
+    public function intern(): HasOne
     {
         return $this->hasOne(Intern::class);
     }
