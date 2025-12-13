@@ -20,6 +20,11 @@ class UserObserver
                 if (!$user->intern) {
                     Intern::create([
                         'user_id' => $user->id,
+                        'department_id' => $user->department_id,
+                        'mentor_id' => null,
+                        'start_date' => now()->toDateString(),
+                        'end_date' => now()->addMonths(3)->toDateString(),
+                        'status' => $user->status,
                     ]);
                 }
             }
@@ -45,6 +50,11 @@ class UserObserver
                 if (!$user->employee) {
                     Employee::create([
                         'user_id' => $user->id,
+                        'hire_date' => now()->toDateString(),
+                        'position' => $user->role,
+                        'salary' => 0,
+                        'bank_details' => null,
+                        'experience' => null,
                     ]);
                 }
             }

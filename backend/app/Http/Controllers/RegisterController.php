@@ -38,6 +38,7 @@ class RegisterController extends Controller
             'name'     => $request->name,
             'email'    => $request->email,
             'password' => Hash::make($request->password),
+            'department_id'=> null,
             'phone'    => $request->phone, 
             'address'  => $request->address,
             'role'     => $role,
@@ -47,7 +48,12 @@ class RegisterController extends Controller
         if ($role === 'intern') {
             Intern::create([
                 'user_id' => $user->id,
-            ]);
+                'department_id' => $user->department_id,
+                'mentor_id' => null,
+                'start_date' => now()->toDateString(),
+                'end_date' => now()->addMonths(3)->toDateString(),
+                'status' => $user->status,
+                ]);
         }
 
         $token = $user->createToken('authenticate_token')->plainTextToken;

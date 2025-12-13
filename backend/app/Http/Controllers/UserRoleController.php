@@ -66,12 +66,11 @@ class UserRoleController extends Controller
             return response()->json(['message' => 'Unauthorized. Only admins can view all users.'], 403);
         }
 
-        $users = User::select('id', 'name', 'email', 'phone', 'role', 'status', 'created_at')->get();
+        $users = User::select('id', 'name', 'email','department_id', 'phone', 'role', 'status', 'created_at')->get();
         return response()->json($users);
     }
 
     // Get a specific user's details (for admin only)
-     
     public function getUser($userId)
     {
         // Check if the user is an admin
