@@ -42,6 +42,7 @@ class RegisterController extends Controller
             'phone'    => $request->phone, 
             'address'  => $request->address,
             'role'     => $role,
+            'status'  => 'active',
         ]);
 
         // if the user is an intern, insert a record in the interns table
