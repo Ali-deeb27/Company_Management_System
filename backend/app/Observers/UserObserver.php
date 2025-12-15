@@ -10,23 +10,27 @@ class UserObserver
 {
     public function created(User $user): void
     {
+         $employeeRoles = ['employee','HR_manager','department_manager','project_manager','accountant'];
         if ($user->role === 'intern') {
             $this->createIntern($user);
         }
 
-        if ($this->isEmployeeRole($user->role)) {
+        if (in_array($user->role, $employeeRoles, true)) {
             $this->createEmployee($user);
         }
     }
 
     public function updated(User $user): void
     {
-        if (! $user->wasChanged('role')) {
-            return;
-        }
 
         $oldRole = $user->getOriginal('role');
         $newRole = $user->role;
+
+        if ($oldRole === $newRole) {
+        return;
+    }
+
+     $employeeRoles = ['employee','HR_manager','department_manager','project_manager','accountant'];
 
         // Changed TO intern
         if ($newRole === 'intern' && $oldRole !== 'intern') {
@@ -40,12 +44,12 @@ class UserObserver
 
 
         // Changed TO employee role
-        if ($this->isEmployeeRole($newRole) && ! $this->isEmployeeRole($oldRole)) {
+        if (in_array($newRole, $employeeRoles, true) && !in_array($oldRole, $employeeRoles, true)) {
             $this->createEmployee($user);
         }
 
         // Changed FROM employee role
-        if ($this->isEmployeeRole($oldRole) && ! $this->isEmployeeRole($newRole)) {
+        if (in_array($oldRole, $employeeRoles, true) && !in_array($newRole, $employeeRoles, true)) {
             optional($user->employee)->delete();
         }
     }
@@ -80,16 +84,5 @@ class UserObserver
             'bank_details'  => null,
             'experience'    => null,
         ]);
-    }
-
-    private function isEmployeeRole(string $role): bool
-    {
-        return in_array($role, [
-            'employee',
-            'HR_manager',
-            'department_manager',
-            'project_manager',
-            'accountant',
-        ], true);
     }
 }
