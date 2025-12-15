@@ -59,5 +59,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/users', [UserRoleController::class, 'getAllUsers']);
     Route::get('/users/{id}', [UserRoleController::class, 'getUser']);
     Route::put('/users/{id}/role', [UserRoleController::class, 'changeRole']);
-    
+    Route::delete('/users/{id}', [UserRoleController::class, 'deleteUser']);
 });

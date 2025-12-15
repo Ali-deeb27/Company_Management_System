@@ -53,7 +53,7 @@ class UserRoleController extends Controller
 
         return response()->json([
             'message' => "User role changed from {$oldRole} to {$newRole}",
-            'user' => $user,
+            'user' => $user->fresh(), // to get latest relationship
         ]);
     }
 
@@ -80,4 +80,27 @@ class UserRoleController extends Controller
         $user = User::findOrFail($userId);
         return response()->json($user);
     }
+
+    public function deleteUser($userId)
+{
+    $admin = Auth::user();
+
+    if ($admin->role !== 'admin') {
+        return response()->json([
+            'message' => 'Unauthorized. Only admins can delete users.'
+        ], 403);
+    }
+    $user = User::findOrFail($userId);
+    if ($user->role === 'admin' && $user->id !== $admin->id) {
+        return response()->json([
+            'message' => 'Cannot delete other admins.'
+        ], 403);
+    }
+
+    $user->delete();
+
+    return response()->json([
+        'message' => "User {$user->name} has been deleted successfully."
+    ]);
+}
 }
