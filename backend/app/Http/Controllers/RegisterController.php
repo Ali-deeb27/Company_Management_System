@@ -45,17 +45,6 @@ class RegisterController extends Controller
             'status'  => 'active',
         ]);
 
-        // if the user is an intern, insert a record in the interns table
-        if ($role === 'intern') {
-            Intern::create([
-                'user_id' => $user->id,
-                'department_id' => $user->department_id,
-                'mentor_id' => null,
-                'start_date' => now()->toDateString(),
-                'end_date' => now()->addMonths(3)->toDateString(),
-                'status' => 'active',
-                ]);
-        }
 
         $token = $user->createToken('authenticate_token')->plainTextToken;
 
