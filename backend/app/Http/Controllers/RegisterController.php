@@ -53,7 +53,7 @@ class RegisterController extends Controller
                 'mentor_id' => null,
                 'start_date' => now()->toDateString(),
                 'end_date' => now()->addMonths(3)->toDateString(),
-                'status' => $user->status,
+                'status' => 'active',
                 ]);
         }
 
