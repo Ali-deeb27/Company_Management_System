@@ -8,53 +8,80 @@ use App\Models\Employee;
 
 class UserObserver
 {
-    public function updated(User $user)
+    private array $employeeRoles = ['employee','HR_manager','department_manager','project_manager','accountant'];
+
+    public function created(User $user): void
     {
-        // Check if role of user was changed
-        if ($user->isDirty('role')) {
-            $oldRole = $user->getOriginal('role');
-            $newRole = $user->role;
+        $this->updateRole($user, null, $user->role);
+    }
 
-            // if new role is intern and doesn't exist in interns table, add it.
-            if ($newRole === 'intern' && $oldRole !== 'intern') {
-                if (!$user->intern) {
-                    Intern::create([
-                        'user_id' => $user->id,
-                    ]);
-                }
-            }
+    public function updated(User $user): void
+    {
+        $oldRole = $user->getOriginal('role');
+        $newRole = $user->role;
 
+        if ($oldRole === $newRole) {
+            return;
+        }
 
-            //if changed from intern to another role, delete from interns table
-            if ($oldRole === 'intern' && $newRole !== 'intern') {
-                if ($user->intern) {
-                    $user->intern->delete();
-                }
-            }
+        $this->updateRole($user, $oldRole, $newRole);
+    }
 
-            // when role becomes one of these, create Employee
-            $employeeRoles = [
-                'employee',
-                'HR_manager',
-                'department_manager',
-                'project_manager',
-                'accountant',
-            ];
+    private function updateRole(User $user, ?string $oldRole, string $newRole): void
+    {
+        if ($newRole === 'intern' && $oldRole !== 'intern') {
+            $this->createOrUpdateIntern($user);
+        } elseif ($oldRole === 'intern' && $newRole !== 'intern') {
+            optional($user->intern)->delete();
+        }
 
-            if (in_array($newRole, $employeeRoles, true) && !in_array($oldRole, $employeeRoles, true)) {
-                if (!$user->employee) {
-                    Employee::create([
-                        'user_id' => $user->id,
-                    ]);
-                }
-            }
+        if (in_array($newRole, $this->employeeRoles, true) && !in_array($oldRole, $this->employeeRoles, true)) {
+            $this->createOrUpdateEmployee($user);
+        } elseif (!in_array($newRole, $this->employeeRoles, true) && in_array($oldRole, $this->employeeRoles, true)) {
+            optional($user->employee)->delete();
+        }
 
-            //if role changed from employee to something else, remove from employees table
-            if (in_array($oldRole, $employeeRoles, true) && !in_array($newRole, $employeeRoles, true)) {
-                if ($user->employee) {
-                    $user->employee->delete();
-                }
+        if (in_array($oldRole, $this->employeeRoles, true) && in_array($newRole, $this->employeeRoles, true)) {
+            if ($employee = $user->employee) {
+                $employee->update(['position' => $newRole]);
             }
         }
+    }
+
+    private function createOrUpdateIntern(User $user): void
+    {
+        if ($user->intern()->exists()){
+            return;
+        }
+
+        Intern::create([
+            'user_id'       => $user->id,
+            'department_id' => $user->department_id,
+            'mentor_id'     => null,
+            'start_date'    => now()->toDateString(),
+            'end_date'      => now()->addMonths(3)->toDateString(),
+            'status'        => 'active',
+        ]);
+    }
+
+    private function createOrUpdateEmployee(User $user): void
+    {
+        $employee = $user->employee()->first();
+
+        if ($employee) {
+            $employee->update([
+                'position' => $user->role,
+            ]);
+            return;
+        }
+
+        Employee::create([
+            'user_id'       => $user->id,
+            'hire_date'     => now(),
+            'position'      => $user->role,
+            'salary'        => 0,
+            'bank_details'  => null,
+            'experience'    => null,
+        ]);
     }
 }

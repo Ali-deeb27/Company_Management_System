@@ -38,17 +38,13 @@ class RegisterController extends Controller
             'name'     => $request->name,
             'email'    => $request->email,
             'password' => Hash::make($request->password),
+            'department_id'=> null,
             'phone'    => $request->phone, 
             'address'  => $request->address,
             'role'     => $role,
+            'status'  => 'active',
         ]);
 
-        // if the user is an intern, insert a record in the interns table
-        if ($role === 'intern') {
-            Intern::create([
-                'user_id' => $user->id,
-            ]);
-        }
 
         $token = $user->createToken('authenticate_token')->plainTextToken;
 
