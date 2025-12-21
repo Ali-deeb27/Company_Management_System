@@ -47,4 +47,8 @@ class Department extends Model
     {
         return $this->hasMany(InternApplication::class, 'department_id');
     }
+
+    public function employees() {
+        return $this->hasMany(Employee::class);
+    }
 }

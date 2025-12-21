@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Project extends Model
 {
@@ -39,6 +40,19 @@ class Project extends Model
         return $this->hasMany(InternshipPosition::class);
     }
 
+    public function manager(){
+    return $this->belongsTo(User::class, 'manager_id');
+    }
 
+    public function interns():BelongsToMany{
+    return $this->belongsToMany(Intern::class, 'project_intern', 'project_id', 'intern_id');
+    }
 
+     public function employees(): BelongsToMany{
+        return $this->belongsToMany(Employee::class,'project_employee','project_id','employee_id');
+    }
+
+    public function milestones(): HasMany{
+        return $this->hasMany(Milestone::class);
+    }
 }

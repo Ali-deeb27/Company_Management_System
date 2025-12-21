@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+
 
 class Intern extends Model
 {
@@ -55,6 +57,10 @@ public function evaluations():HasMany
 public function getCertificate():HasOne
 {
     return $this->hasOne(InternCertificate::class);
+}
+public function projects():BelongsToMany
+{
+    return $this->belongsToMany(Project::class, 'project_intern', 'intern_id', 'project_id');
 }
 
 }

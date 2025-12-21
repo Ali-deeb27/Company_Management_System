@@ -35,4 +35,8 @@ class Task extends Model
         return $this->belongsTo(User::class, 'assignee_id');
     }
 
+    public function logs(){
+        return $this->hasMany(TaskLog::class);
+    }
+
 }

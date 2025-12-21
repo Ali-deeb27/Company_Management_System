@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Facades\DB;
 
 class Employee extends Model
@@ -79,9 +80,14 @@ class Employee extends Model
     return $this->hasMany(InternEvaluation::class, 'mentor_id');
     }
 
-    public function issueCertificates()
-{
+    public function issueCertificates(){
     return $this->hasMany(InternCertificate::class, 'issued_by');
+    }
+
+    public function projects(): BelongsToMany
+{
+    return $this->belongsToMany(Project::class, 'project_employee', 'employee_id', 'project_id');
 }
+
 
 }
