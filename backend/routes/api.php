@@ -19,6 +19,7 @@ use App\Http\Controllers\Api\TaskLogController;
 use App\Http\Controllers\Api\ProjectReportController;
 use App\Http\Controllers\Api\DepartmentReportController;
 use App\Http\Controllers\Api\ProjectReportSummaryController;
+use App\Http\Controllers\AttendanceController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -102,8 +103,13 @@ Route::get('/user', function (Request $request) {
 
     //TaskLog Routes
     Route::get('/tasks/{id}/logs', [TaskLogController::class, 'index']);
+    Route::post('/task-logs', [TaskLogController::class, 'store']);
     Route::put('/logs/{id}', [TaskLogController::class, 'update']);
     Route::delete('/logs/{id}', [TaskLogController::class, 'destroy']);
+    Route::get('/my-task-logs', [TaskLogController::class, 'myLogs']);
+    Route::get('/task-logs/pending', [TaskLogController::class, 'pendingLogs']);
+    Route::patch('/task-logs/{id}/approve', [TaskLogController::class, 'approveLogs']);
+    Route::patch('/task-logs/{id}/status', [TaskLogController::class, 'updateStatus']);
     
     
     // Project Report Routes
@@ -116,4 +122,11 @@ Route::get('/user', function (Request $request) {
     Route::get('/users/{id}', [UserRoleController::class, 'getUser']);
     Route::put('/users/{id}/role', [UserRoleController::class, 'changeRole']);
     Route::delete('/users/{id}', [UserRoleController::class, 'deleteUser']);
+
+
+    // Attendance Routes
+     Route::post('/attendance/check-in', [AttendanceController::class, 'checkIn']);
+    Route::post('/attendance/check-out', [AttendanceController::class, 'checkOut']);
+    Route::get('/attendance/myAttendance', [AttendanceController::class, 'myAttendance']);
+    Route::get('/attendance/allAttendances', [AttendanceController::class, 'allAttendances']);
 });
