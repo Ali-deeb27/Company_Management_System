@@ -16,6 +16,7 @@ class Payroll extends Model
       'deductions',
       'net_pay',
       'status',
+      'payslip_link'
     ];
 
     protected function casts(): array
@@ -25,6 +26,7 @@ class Payroll extends Model
             'gross'=> 'decimal:2',
             'deductions'=> 'decimal:2',
             'net_pay'=> 'decimal:2',
+            'sent_at' => 'datetime',
         ];
     }
 

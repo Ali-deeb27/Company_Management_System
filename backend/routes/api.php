@@ -19,6 +19,9 @@ use App\Http\Controllers\Api\TaskLogController;
 use App\Http\Controllers\Api\ProjectReportController;
 use App\Http\Controllers\Api\DepartmentReportController;
 use App\Http\Controllers\Api\ProjectReportSummaryController;
+use App\Http\Controllers\Api\SalaryComponentController;
+use App\Http\Controllers\Api\PayrollDeductionController;
+use App\Http\Controllers\Api\PayrollController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -110,6 +113,37 @@ Route::get('/user', function (Request $request) {
     Route::get('/reports/projects/summary', [ProjectReportSummaryController::class, 'index']);
     Route::get('/reports/projects/{id}', [ProjectReportController::class, 'show']);
     Route::get('/reports/departments/{id}', [DepartmentReportController::class, 'show']);
+
+
+    //Salary Component Routes
+     Route::post('/salaries/components', [SalaryComponentController::class, 'store']);
+     Route::get('/salaries/components/{employee_id}', [SalaryComponentController::class, 'indexByEmployee']);
+     Route::put('/salaries/components/{id}', [SalaryComponentController::class, 'update']);
+     Route::delete('/salaries/components/{id}', [SalaryComponentController::class, 'destroy']);
+
+    //Payroll Deduction Routes
+     Route::post('/deductions', [PayrollDeductionController::class, 'store']);
+     Route::get('/deductions', [PayrollDeductionController::class, 'index']);
+     Route::put('/deductions/{id}', [PayrollDeductionController::class, 'update']);
+     Route::delete('/deductions/{id}', [PayrollDeductionController::class, 'destroy']);
+
+     
+     //Payroll Routes
+     Route::post('/payroll/run', [PayrollController::class, 'run']);
+     Route::post('/payroll/run-interns', [PayrollController::class, 'runInterns']);
+     Route::post('/payroll/preview',[PayrollController::class, 'preview']);
+     Route::get('/payroll', [PayrollController::class, 'index']);
+     Route::get('/payroll/{id}',[PayrollController::class, 'show']);
+     Route::put('/payroll/{id}/status',[PayrollController::class, 'updateStatus']);
+     Route::post('/payroll/{id}/export', [PayrollController::class, 'exportToAccounting']);
+     
+     
+     
+     // Payslip Routes
+     Route::post('/payslips/{payroll_id}/generate',[PayrollController::class, 'generatePayslip']);
+     Route::get('/payslips/my', [PayrollController::class, 'myPayslips']);
+     Route::get('/payslips/{id}/download', [PayrollController::class, 'downloadPayslip']);
+     Route::post('/payslips/{id}/email', [PayrollController::class, 'emailPayslip']);
    
 
     Route::get('/users', [UserRoleController::class, 'getAllUsers']);
