@@ -233,6 +233,11 @@ public function assignEmployee(Request $request, int $id): JsonResponse{
     $user->department_id = $department->id;
     $user->save();
 
+    if ($user->employee) { 
+    $user->employee->department_id = $department->id;
+    $user->employee->save();
+    }
+
     // Response
     return response()->json([
         'success' => true,
