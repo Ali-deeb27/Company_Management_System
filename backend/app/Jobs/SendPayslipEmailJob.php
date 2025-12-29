@@ -2,8 +2,8 @@
 
 namespace App\Jobs;
 
-use App\Mail\PayslipMail;
 use App\Models\Payroll;
+use App\Mail\PayslipMail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -15,27 +15,26 @@ class SendPayslipEmailJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $payroll;
-    protected $adminName;
+    protected Payroll $payroll;
 
-    
-    public function __construct(Payroll $payroll, $adminName)
+    public function __construct(Payroll $payroll)
     {
         $this->payroll = $payroll;
-        $this->adminName = $adminName;
+        
     }
 
-    /**
-     * Execute the job.
-     */
+    
     public function handle()
     {
-        $employeeEmail = $this->payroll->employee->user->email;
+        $employee = $this->payroll->employee;
 
-        // Send email
-        Mail::to($employeeEmail)->send(new PayslipMail($this->payroll, $this->adminName));
+        if (!$employee || !$employee->user) {
+            return;
+        }
 
-        // Record sent timestamp
+        Mail::to($employee->user->email)
+            ->send(new PayslipMail($this->payroll));
+
         $this->payroll->sent_at = now();
         $this->payroll->save();
     }

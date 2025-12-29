@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\Payroll;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -10,26 +11,20 @@ class PayslipMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $payroll;
-    public $pdfContent;
-    public $adminName;
+    public Payroll $payroll;
 
-    public function __construct($payroll, $pdfContent, $adminName = null)
+    public function __construct(Payroll $payroll)
     {
         $this->payroll = $payroll;
-        $this->pdfContent = $pdfContent;
-        $this->adminName = $adminName ?? config('mail.from.name');
+        
     }
 
     public function build()
     {
-        return $this->from(config('mail.from.address'), $this->adminName)
-                    ->subject('Your Payslip for ' . $this->payroll->month)
-                    ->view('emails.payslip') // your Blade email view
-                    ->attachData(
-                        $this->pdfContent,
-                        'Payslip.pdf',
-                        ['mime' => 'application/pdf']
-                    );
+        return $this->subject('Your Payslip')
+            ->view('emails.payslip')
+            ->attach(storage_path(
+                'app/public/payslips/payslip_' . $this->payroll->id . '.pdf'
+            ));
     }
 }

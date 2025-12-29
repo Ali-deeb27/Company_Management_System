@@ -437,7 +437,7 @@ class PayrollController extends Controller
     }
 
     public function generatePayslip($payroll_id, Request $request){
-
+        $payroll = Payroll::findOrFail($payroll_id);
         $user = $request->user();
         if (!in_array($user->role, ['accountant', 'admin'])) {
             return response()->json([
@@ -502,6 +502,8 @@ class PayrollController extends Controller
         $filePath = 'payslips/' . $fileName;
 
         Storage::disk('public')->put($filePath, $pdf->output());
+
+        SendPayslipEmailJob::dispatch($payroll);
 
         //Update payroll record with PDF link
         $payroll->update([
@@ -590,10 +592,10 @@ class PayrollController extends Controller
         return response()->json(['message' => 'Payslip not found or not generated'], 404);
     }
 
-    $admin = request()->user();
+    $user = request()->user();
 
     // Dispatch email job
-    SendPayslipEmailJob::dispatch($payroll, $admin->name);
+    SendPayslipEmailJob::dispatch($payroll);
 
     return response()->json(['message' => 'Payslip email is queued for sending']);
 }

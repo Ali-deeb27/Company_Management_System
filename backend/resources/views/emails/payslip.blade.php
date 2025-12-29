@@ -8,6 +8,6 @@
 
     <p>Your payslip for <strong>{{ $payroll->month }}</strong> is attached to this email.</p>
 
-    <p>Thanks,<br>{{ $adminName }}</p>
+    <p>Thanks</p>
 </body>
 </html>
