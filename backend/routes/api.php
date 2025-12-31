@@ -23,6 +23,13 @@ use App\Http\Controllers\Api\SalaryComponentController;
 use App\Http\Controllers\Api\PayrollDeductionController;
 use App\Http\Controllers\Api\PayrollController;
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\EvaluationController;
+use App\Http\Controllers\InterviewController;
+use App\Http\Controllers\JobApplicationController;
+use App\Http\Controllers\JobOpeningController;
+use App\Http\Controllers\OfferLetterController;
+use App\Http\Controllers\OnboardingController;
+use App\Http\Controllers\OnboardingTaskController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -163,4 +170,35 @@ Route::get('/user', function (Request $request) {
     Route::post('/attendance/check-out', [AttendanceController::class, 'checkOut']);
     Route::get('/attendance/myAttendance', [AttendanceController::class, 'myAttendance']);
     Route::get('/attendance/allAttendances', [AttendanceController::class, 'allAttendances']);
+
+    // Job Openings
+    Route::get('jobs', [JobOpeningController::class, 'index']);
+    Route::post('jobs', [JobOpeningController::class, 'store']); 
+    Route::get('jobs/{id}', [JobOpeningController::class, 'show']);
+    Route::patch('jobs/{id}/close', [JobOpeningController::class, 'close']);
+
+    // Applications
+    Route::post('jobs/{id}/apply', [JobApplicationController::class, 'apply']);
+    Route::patch('applications/{id}/status', [JobApplicationController::class, 'updateStatus']);
+
+
+    // Interviews
+    Route::post('applications/{id}/interviews', [InterviewController::class, 'schedule']);
+    Route::patch('interviews/{id}/complete', [InterviewController::class, 'complete']);
+
+    // Evaluations
+    Route::post('interviews/{id}/evaluations', [EvaluationController::class, 'store']);
+
+    // Offer letters
+    Route::post('applications/{id}/offer', [OfferLetterController::class, 'send']);
+    Route::patch('offers/{id}/respond', [OfferLetterController::class, 'respond']);
+
+    // Onboarding
+    Route::post('onboarding/{userId}', [OnboardingController::class, 'create']);
+    Route::get('onboarding/{userId}', [OnboardingController::class, 'show']);
+
+    // Onboarding tasks
+    Route::post('onboarding-tasks/{taskId}/submit', [OnboardingTaskController::class, 'submit']);
+    Route::post('onboarding-tasks/{taskId}/approve', [OnboardingTaskController::class, 'approve']);
+
 });

@@ -100,8 +100,18 @@ class User extends Authenticatable
         return $this->role === 'admin'; 
     }
 
-     public function logs(){
+     public function logs():HasMany{
         return $this->hasMany(TaskLog::class);
     }
 
+    public function jobApplications():HasMany
+    {
+        return $this->hasMany(JobApplication::class);
+    }
+    
+    public function onboarding():HasOne
+    {
+        return $this->hasOne(Onboarding::class);
+    }
+    
 }
