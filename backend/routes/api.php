@@ -23,6 +23,7 @@ use App\Http\Controllers\Api\SalaryComponentController;
 use App\Http\Controllers\Api\PayrollDeductionController;
 use App\Http\Controllers\Api\PayrollController;
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\Api\DocumentController;
 use App\Http\Controllers\EvaluationController;
 use App\Http\Controllers\InterviewController;
 use App\Http\Controllers\JobApplicationController;
@@ -166,10 +167,26 @@ Route::get('/user', function (Request $request) {
 
 
     // Attendance Routes
-     Route::post('/attendance/check-in', [AttendanceController::class, 'checkIn']);
+    Route::post('/attendance/check-in', [AttendanceController::class, 'checkIn']);
     Route::post('/attendance/check-out', [AttendanceController::class, 'checkOut']);
     Route::get('/attendance/myAttendance', [AttendanceController::class, 'myAttendance']);
     Route::get('/attendance/allAttendances', [AttendanceController::class, 'allAttendances']);
+
+    // Document Routes
+    Route::post('/documents', [DocumentController::class, 'store']);
+    Route::get('/documents', [DocumentController::class, 'index']);
+    Route::get('/documents/{id}', [DocumentController::class, 'show']);
+    Route::put('/documents/{id}', [DocumentController::class, 'update']);
+    Route::delete('/documents/{id}', [DocumentController::class, 'destroy']);
+    Route::get('/documents/{id}/download', [DocumentController::class, 'download']);
+    Route::get('/documents/{id}/versions', [DocumentController::class, 'versions']);
+    Route::post('/documents/{id}/versions', [DocumentController::class, 'uploadVersion']);
+    Route::get('/documents/{id}/versions/{versionId}', [DocumentController::class, 'viewVersion']);
+    Route::delete('/documents/{id}/versions/{versionId}', [DocumentController::class, 'deleteVersion']);
+    Route::post('/documents/{id}/link', [DocumentController::class, 'linkDocument']);
+    Route::get('/documents/linked/{type}/{id}', [DocumentController::class, 'getByEntity']);
+
+
 
     // Job Openings
     Route::get('jobs', [JobOpeningController::class, 'index']);
