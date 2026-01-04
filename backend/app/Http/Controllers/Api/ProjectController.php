@@ -12,6 +12,8 @@ use App\Models\Employee;
 use App\Models\Milestone;
 use Illuminate\Validation\Rule;
 use App\Models\Task;
+use App\Models\User;
+use App\Notifications\TaskAssignedNotification;
 
 class ProjectController extends Controller
 {
@@ -364,9 +366,9 @@ class ProjectController extends Controller
     }
 
     public function listMilestones($id): JsonResponse{
-    $user = Auth::user();
+        $user = Auth::user();
 
-    $project = Project::with('milestones')->findOrFail($id);
+        $project = Project::with('milestones')->findOrFail($id);
 
         if (in_array($user->role, ['admin', 'HR_manager'])) {
         }
@@ -483,21 +485,21 @@ class ProjectController extends Controller
     }
 
     public function storeTask(Request $request, $id): JsonResponse{
-    $user = Auth::user();
-    $project = Project::findOrFail($id);
+        $user = Auth::user();
+        $project = Project::findOrFail($id);
 
-    if (in_array($user->role, ['admin', 'HR_manager'])) {
-        }elseif ($user->role === 'department_manager') {
-            if ($project->department_id !== $user->department_id) {
+        if (in_array($user->role, ['admin', 'HR_manager'])) {
+            }elseif ($user->role === 'department_manager') {
+                if ($project->department_id !== $user->department_id) {
+                    return response()->json(['message' => 'Unauthorized'], 403);
+                }
+            }elseif ($user->role === 'project_manager') {
+                if ($project->manager_id !== $user->id) {
+                    return response()->json(['message' => 'Unauthorized'], 403);
+                }
+            }else {
                 return response()->json(['message' => 'Unauthorized'], 403);
             }
-        }elseif ($user->role === 'project_manager') {
-            if ($project->manager_id !== $user->id) {
-                return response()->json(['message' => 'Unauthorized'], 403);
-            }
-        }else {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
 
         $validated = $request->validate([
             'assignee_id' => 'required|integer|exists:users,id', // can be employee or intern
@@ -508,14 +510,58 @@ class ProjectController extends Controller
             'end_date' => 'required|date|after_or_equal:start_date',
         ]);
 
-    
+        
         $task = Task::create(array_merge($validated, ['project_id' => $project->id]));
+
+        // Notify assignee
+        $assignee = User::find($validated['assignee_id']);
+        if ($assignee) {
+                $assignee->notify(new TaskAssignedNotification($task));
+        }
 
         return response()->json([
             'success' => true,
             'message' => 'Task created successfully',
             'data' => $task->load('assignee')
         ], 201);
+    }
+
+   public function assignProjectManager(Request $request, $projectId){
+        // Only admin can assign
+        if (Auth::user()->role !== 'admin') {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        // Validate user_id
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+        ]);
+
+    // Find project and eager load projectManager
+        $project = Project::findOrFail($projectId);
+
+        // Find the user to assign as project manager
+        $user = User::findOrFail($request->user_id);
+
+        // Assign project manager
+        $project->project_manager_id = $user->id;
+        $project->save();
+
+        // Change role if not already project_manager
+        if ($user->role !== 'project_manager') {
+            $user->update([
+                'role' => 'project_manager'
+            ]);
+        }
+
+        // Reload projectManager relationship to return in response
+        $project->load('projectManager');
+
+        return response()->json([
+            'message' => 'Project manager assigned successfully',
+            'project' => $project,
+            'project_manager' => $user
+        ]);
     }
          
 

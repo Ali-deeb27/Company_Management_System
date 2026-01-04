@@ -29,7 +29,8 @@ class User extends Authenticatable
         'address',
         'role',
         'department_id',
-        'status'
+        'status',
+        'converted_to_employee'
     ];
 
     /**

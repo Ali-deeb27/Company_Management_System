@@ -84,10 +84,13 @@ class Employee extends Model
     return $this->hasMany(InternCertificate::class, 'issued_by');
     }
 
-    public function projects(): BelongsToMany
-{
-    return $this->belongsToMany(Project::class, 'project_employee', 'employee_id', 'project_id');
-}
+    public function projects(): BelongsToMany{
+        return $this->belongsToMany(Project::class, 'project_employee', 'employee_id', 'project_id');
+    }
+
+    public function attendances(): HasMany{
+        return $this->hasMany(Attendance::class, 'user_id', 'id');
+    }
 
 
 }

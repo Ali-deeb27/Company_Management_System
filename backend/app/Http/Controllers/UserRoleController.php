@@ -5,6 +5,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 
 class UserRoleController extends Controller
 {
@@ -49,7 +50,14 @@ class UserRoleController extends Controller
             return response()->json(['message' => 'Cannot change admin role.'], 403);
         }
 
+        if ($oldRole === 'intern' && $newRole === 'employee'){
+            $user->update([
+            'role' => $newRole,
+            'converted_to_employee' => true
+        ]);
+        }else{
         $user->update(['role' => $newRole]);
+        }
 
         return response()->json([
             'message' => "User role changed from {$oldRole} to {$newRole}",

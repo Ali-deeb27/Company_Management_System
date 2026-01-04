@@ -31,6 +31,9 @@ use App\Http\Controllers\JobOpeningController;
 use App\Http\Controllers\OfferLetterController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\OnboardingTaskController;
+use App\Http\Controllers\Api\EmployeeReportController;
+use App\Http\Controllers\Api\PayrollReportController;
+use App\Http\Controllers\Api\AttendanceReportController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -91,12 +94,14 @@ Route::get('/user', function (Request $request) {
     Route::get('/projects/{id}', [ProjectController::class, 'show']);
     Route::put('/projects/{id}', [ProjectController::class, 'update']);
     Route::delete('/projects/{id}', [ProjectController::class, 'destroy']);
+    Route::post('/projects/{project}/assign-project-manager',[ProjectController::class, 'assignProjectManager']);
     Route::post('/projects/{id}/assign-employee', [ProjectController::class, 'assignEmployee']);
     Route::delete('/projects/{id}/remove-employee/{employee_id}',[ProjectController::class, 'removeEmployee']);
     Route::post('/projects/{id}/interns', [ProjectController::class, 'assignIntern']);
     Route::delete('/projects/{id}/remove-intern/{intern_id}',[ProjectController::class, 'removeIntern']);
     Route::get('/projects/{id}/milestones',[ProjectController::class, 'listMilestones']);
     Route::post('/projects/{id}/milestones',[ProjectController::class, 'storeMilestone']);
+    // Tasks within Projects
     Route::get('/projects/{id}/tasks', [ProjectController::class, 'tasks']);
     Route::post('/projects/{id}/tasks', [ProjectController::class, 'storeTask']);
     
@@ -125,6 +130,9 @@ Route::get('/user', function (Request $request) {
     
     // Project Report Routes
     Route::get('/reports/projects/summary', [ProjectReportSummaryController::class, 'index']);
+    Route::get('/reports/projects/by-department',[ProjectReportController::class, 'byDepartment']);
+    Route::get('/reports/projects/overview',[ProjectReportController::class, 'overview']);
+    Route::get('/reports/projects/{project_id}/tasks',[ProjectReportController::class, 'taskProgress']);
     Route::get('/reports/projects/{id}', [ProjectReportController::class, 'show']);
     Route::get('/reports/departments/{id}', [DepartmentReportController::class, 'show']);
 
@@ -217,5 +225,19 @@ Route::get('/user', function (Request $request) {
     // Onboarding tasks
     Route::post('onboarding-tasks/{taskId}/submit', [OnboardingTaskController::class, 'submit']);
     Route::post('onboarding-tasks/{taskId}/approve', [OnboardingTaskController::class, 'approve']);
+    
+    // Employee Reports
+    Route::get( '/reports/employees/overview',[EmployeeReportController::class, 'overview']);
+    Route::get('/reports/employees/by-department', [EmployeeReportController::class, 'byDepartment']);
+    //internship reports
+    Route::get('/reports/internships/overview', [EmployeeReportController::class, 'internshipOverview']);
+    Route::get('/reports/internships/by-department',[EmployeeReportController::class, 'internshipsByDepartment']);
+    Route::get('/reports/payrolls/summary',[PayrollReportController::class, 'monthlySummary']);
+    Route::get('/reports/payrolls/by-department',[PayrollReportController::class, 'byDepartment']);
+    // Attendance Reports    
+    Route::get('/reports/attendance/summary',[AttendanceReportController::class, 'summary']);
+    Route::get('/reports/attendance/by-employee',[AttendanceReportController::class, 'byEmployee']);
+    Route::get('/reports/attendance/by-department', [AttendanceReportController::class, 'byDepartment']);
 
-});
+    
+});     

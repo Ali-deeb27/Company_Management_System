@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use App\Models\User;
 
 class Project extends Model
 {
@@ -16,6 +17,7 @@ class Project extends Model
       'start_date',
       'end_date',
       'status',
+      'project_manager_id'
     ];
 
     protected function casts(): array
@@ -55,4 +57,9 @@ class Project extends Model
     public function milestones(): HasMany{
         return $this->hasMany(Milestone::class);
     }
+
+    public function projectManager(): BelongsTo{
+        return $this->belongsTo(User::class, 'project_manager_id');
+    }
+    
 }

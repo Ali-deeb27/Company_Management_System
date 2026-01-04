@@ -8,29 +8,16 @@ use Illuminate\Http\Request;
 
 class AttendanceController extends Controller
 {
-    public function checkIn()
-    {
+    public function checkin(Request $request) {
         $user = Auth::user();
-        $today = date('Y-m-d');
-        $nowTime = date('H:i:s');
 
-        $attendance = Attendance::where('user_id', $user->id)
-            ->where('date', $today)
-            ->first();
-
-        if ($attendance && $attendance->check_in) {
-            return response()->json([
-                'message' => 'You already checked in today'
-            ], 400);
-        }
-
-        $attendance = Attendance::updateOrCreate(
+        $attendance = Attendance::firstOrCreate(
             [
                 'user_id' => $user->id,
-                'date' => $today
+                'date' => now()->toDateString()
             ],
             [
-                'check_in' => $nowTime
+                'check_in' => now()
             ]
         );
 
