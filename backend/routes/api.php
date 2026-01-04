@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AnnouncementController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RegisterController;
@@ -34,6 +35,8 @@ use App\Http\Controllers\OnboardingTaskController;
 use App\Http\Controllers\Api\EmployeeReportController;
 use App\Http\Controllers\Api\PayrollReportController;
 use App\Http\Controllers\Api\AttendanceReportController;
+use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\EventController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -239,5 +242,21 @@ Route::get('/user', function (Request $request) {
     Route::get('/reports/attendance/by-employee',[AttendanceReportController::class, 'byEmployee']);
     Route::get('/reports/attendance/by-department', [AttendanceReportController::class, 'byDepartment']);
 
-    
+    //Event Routes
+    Route::get('/events', [EventController::class, 'index']);
+    Route::post('/events', [EventController::class, 'store']);
+    Route::get('/events/{id}', [EventController::class, 'show']);
+    Route::put('/events/{id}', [EventController::class, 'update']);
+    Route::delete('/events/{id}', [EventController::class, 'destroy']);
+
+    //Announcement Routes
+    Route::get('/announcements', [AnnouncementController::class, 'index']);
+    Route::post('/announcements', [AnnouncementController::class, 'store']);
+    Route::get('/announcements/{id}', [AnnouncementController::class, 'show']);
+    Route::put('/announcements/{id}', [AnnouncementController::class, 'update']);
+    Route::delete('/announcements/{id}', [AnnouncementController::class, 'destroy']);
+    Route::get('/my-announcements', [AnnouncementController::class, 'myAnnouncements']);
+
+    //Calendar Route
+    Route::get('/calendar', [CalendarController::class, 'index']);
 });     
