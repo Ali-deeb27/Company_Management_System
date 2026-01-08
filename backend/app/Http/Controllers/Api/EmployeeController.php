@@ -18,6 +18,10 @@ class EmployeeController extends Controller
 
     public function store(Request $request)
     {
+        $user = $request->user();
+        if ($user->role !== 'admin') {
+            return response()->json(['message' => 'Forbidden'], 403);
+        }
         $request->validate([
             'user_id' => 'required|exists:users,id|unique:employees,user_id',
             'position' => 'nullable|string|max:255',
@@ -102,6 +106,11 @@ class EmployeeController extends Controller
 
      public function update(Request $request, $id)
     {
+        $user = $request->user();
+        if ($user->role !== 'admin') {
+            return response()->json(['message' => 'Forbidden'], 403);
+        }
+
         $employee = Employee::with('user')->findOrFail($id);
         $userData = $request->only(['name','email','phone','address','role','department_id','status']);
         $employeeData = $request->only(['position','experience','hire_date','salary']);
